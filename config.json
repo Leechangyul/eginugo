@@ -1,5 +1,5 @@
 {
-  "serviceKey": "",
+  "serviceKey": "rYYSew4DaEimeBMXNxildJfm9s9EhY4TKQhjWWprA1IYV68yS0pHnuv64wJh3RuLgEQER2fJzw6HKCAhPa2plg==",
   "region": "구미",
   "lat": 36.1196,
   "lon": 128.3441,
@@ -13,11 +13,11 @@
     "daily": true
   },
   "theme": {
-    "top": "#136DE0",
-    "bottom": "#4BB7EA",
+    "top": "#136de0",
+    "bottom": "#4bb7ea",
     "glow": true,
-    "ink": "#FFFFFF",
-    "dim": "#EEF8FF"
+    "ink": "#ffffff",
+    "dim": "#eef8ff"
   },
   "displayMode": "fit"
 }
