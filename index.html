@@ -12,9 +12,9 @@
   기상청 API 를 브라우저에서 직접 호출합니다.
 
   [설정 방법]
-    아래 CONFIG 블록만 고치세요. 화면 설정을 눈으로 보며 고치려면
-    PC 브라우저에서 이 파일 주소 뒤에 ?setup=1 을 붙여 여세요.
-      예) file:///D:/board/board.html?setup=1
+    PC 브라우저에서 이 파일을 열고 주소 끝에 ?setup 을 붙이면 설정 화면이 나옵니다.
+      예) file:///D:/board/index.html?setup
+    호스팅으로 쓸 때는 같은 폴더의 config.json 이 아래 CONFIG 보다 우선합니다.
 
   [A200 연결]
     PlayerMaster > 프로그램 > 웹페이지 창 (384 x 432 전체화면) > 이 파일 지정
@@ -72,8 +72,12 @@ html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#
 .wico{display:block;margin:2px auto 0;width:34px;height:34px}
 .wval{height:21px;line-height:21px;font-size:18px;color:#F4FBFF;white-space:nowrap}
 
-#stamp{right:4px;bottom:2px;font-size:12px;color:rgba(255,255,255,.55)}
-#diag{left:0;bottom:0;width:384px;box-sizing:border-box;padding:5px 8px;
+#stamp{position:absolute;right:4px;bottom:2px;font-size:12px;
+  color:rgba(255,255,255,.55)}
+/* position 을 이 규칙에 직접 둡니다. 자바스크립트가 className 을 갈아치워도
+   .ab 에만 의존하면 position 이 날아가 레이아웃이 무너집니다. */
+#diag{position:absolute;left:0;bottom:0;width:384px;box-sizing:border-box;
+  padding:5px 8px;
   background:#7a1414;color:#fff;font-size:13px;line-height:1.35;font-weight:bold;
   display:none}
 #diag.on{display:block}
@@ -188,13 +192,21 @@ body.setup #setup{display:block}
 
     <div class="p">
       <h2>지역 · 관측지점</h2>
-      <div class="r"><label for="sRegion">지역명</label>
-        <input type="text" id="sRegion" maxlength="12"></div>
+      <div class="r"><label for="sStn">지점 선택</label>
+        <select id="sStn" style="flex:1;min-width:160px;padding:7px 9px;
+          border:1px solid #dcdcd8;border-radius:6px;font:inherit;background:#fff">
+        </select></div>
+      <div class="r"><label for="sRegion">표출 지역명</label>
+        <input type="text" id="sRegion" maxlength="12">
+        <span class="hint" style="margin:0">화면에 나올 이름 (수정 가능)</span></div>
       <div class="r"><label for="sLat">위도</label><input type="number" id="sLat" step="0.0001">
         <label for="sLon" style="min-width:42px">경도</label>
         <input type="number" id="sLon" step="0.0001">
         <span class="tag" id="sGrid">격자 -, -</span></div>
-      <p class="hint">지도에서 설치 지점을 우클릭하면 좌표가 나옵니다.</p>
+      <p class="hint">지점을 고르면 좌표가 자동으로 채워집니다.
+        기상청 격자는 5km 단위라 시내 어느 지점을 찍어도 대개 같은 격자입니다.<br>
+        <b>목록에 없거나 설치 지점이 시 외곽이면</b> 지점 선택을 <code>직접 입력</code>으로
+        두고 지도에서 딴 좌표를 넣으세요.</p>
     </div>
 
     <div class="p">
@@ -311,6 +323,81 @@ var ICON = {
   "suncloud-sm": "data:image/png;base64,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"
 };
 
+var STN = [
+  [105,"강릉","강원",37.7499,128.8761],
+  [100,"대관령","강원",37.6771,128.7183],
+  [106,"동해","강원",37.5247,129.1143],
+  [90,"속초","강원",38.2509,128.5647],
+  [121,"영월","강원",37.1836,128.4617],
+  [114,"원주","강원",37.3422,127.9202],
+  [95,"철원","강원",38.1479,127.3042],
+  [101,"춘천","강원",37.8813,127.7300],
+  [216,"태백","강원",37.1641,128.9856],
+  [212,"홍천","강원",37.6971,127.8888],
+  [98,"동두천","경기",37.9034,127.0606],
+  [119,"수원","경기",37.2816,127.0126],
+  [203,"이천","경기",37.2721,127.4350],
+  [99,"파주","경기",37.7599,126.7800],
+  [294,"거제","경남",34.8806,128.6212],
+  [284,"거창","경남",35.6866,127.9095],
+  [253,"김해","경남",35.2286,128.8894],
+  [295,"남해","경남",34.8376,127.8925],
+  [288,"밀양","경남",35.4936,128.7486],
+  [289,"산청","경남",35.4155,127.8790],
+  [257,"양산","경남",35.3350,129.0372],
+  [192,"진주","경남",35.1800,128.1076],
+  [155,"창원","경남",35.2280,128.6811],
+  [162,"통영","경남",34.8544,128.4331],
+  [285,"합천","경남",35.5665,128.1659],
+  [283,"경주","경북",35.8562,129.2247],
+  [279,"구미","경북",36.1196,128.3441],
+  [273,"문경","경북",36.5866,128.1868],
+  [271,"봉화","경북",36.8933,128.7325],
+  [137,"상주","경북",36.4109,128.1590],
+  [136,"안동","경북",36.5684,128.7294],
+  [277,"영덕","경북",36.4150,129.3653],
+  [272,"영주","경북",36.8057,128.6240],
+  [281,"영천","경북",35.9733,128.9387],
+  [115,"울릉도","경북",37.4844,130.9057],
+  [130,"울진","경북",36.9930,129.4004],
+  [278,"의성","경북",36.3527,128.6971],
+  [138,"포항","경북",36.0190,129.3435],
+  [156,"광주","광주",35.1595,126.8526],
+  [143,"대구","대구",35.8694,128.6014],
+  [133,"대전","대전",36.3504,127.3845],
+  [159,"부산","부산",35.1796,129.0756],
+  [108,"서울","서울",37.5665,126.9780],
+  [239,"세종","세종",36.4801,127.2890],
+  [152,"울산","울산",35.5384,129.3114],
+  [201,"강화","인천",37.7473,126.4878],
+  [102,"백령도","인천",37.9661,124.6304],
+  [112,"인천","인천",37.4563,126.7052],
+  [262,"고흥","전남",34.6111,127.2850],
+  [266,"광양","전남",34.9407,127.6959],
+  [165,"목포","전남",34.8118,126.3922],
+  [174,"순천","전남",34.9506,127.4872],
+  [168,"여수","전남",34.7604,127.6622],
+  [252,"영광","전남",35.2772,126.5120],
+  [170,"완도","전남",34.3110,126.7550],
+  [261,"해남","전남",34.5735,126.5990],
+  [140,"군산","전북",35.9675,126.7369],
+  [247,"남원","전북",35.4164,127.3905],
+  [243,"부안","전북",35.7317,126.7330],
+  [146,"전주","전북",35.8242,127.1480],
+  [245,"정읍","전북",35.5699,126.8560],
+  [189,"서귀포","제주",33.2541,126.5601],
+  [184,"제주","제주",33.4996,126.5312],
+  [238,"금산","충남",36.1089,127.4881],
+  [235,"보령","충남",36.3331,126.6127],
+  [129,"서산","충남",36.7848,126.4503],
+  [232,"천안","충남",36.8151,127.1139],
+  [177,"홍성","충남",36.6014,126.6608],
+  [221,"제천","충북",37.1326,128.1910],
+  [131,"청주","충북",36.6284,127.4890],
+  [135,"추풍령","충북",36.2203,127.9946],
+  [127,"충주","충북",36.9910,127.9260]
+];
+
 var KINDS = ["sun","suncloud","cloud","rain","sleet","snow"];
 var DOW = ["일","월","화","수","목","금","토"];
 var BASE = "https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/";
@@ -318,7 +405,9 @@ var STAGE_W = 384, STAGE_H = 432, GW = 352, GH = 30;
 var VIL = [2,5,8,11,14,17,20,23];
 
 var $ = function(id){ return document.getElementById(id); };
-var isSetup = /[?&]setup=1/.test(location.search);
+/* ?setup=1 / ?setup / #setup / ?setup?=1 등 어떤 형태로 써도 인식합니다.
+   물음표를 하나 더 붙이는 실수가 흔해 관대하게 받습니다. */
+var isSetup = /setup/i.test(location.search + location.hash);
 
 /* 같은 폴더에 config.json 이 있으면 CONFIG 를 덮어씁니다.
    호스팅 시 98KB HTML 을 건드리지 않고 작은 파일만 고치면 되도록 한 장치입니다.
@@ -698,9 +787,9 @@ function render(root, d){
 
 function diag(t, dt){
   $("diag").innerHTML = "<b>"+t+"</b> "+(dt||"");
-  $("diag").className = "on";
+  $("diag").className = "ab on";      /* ab 를 반드시 남깁니다 */
 }
-function diagClear(){ $("diag").className = ""; }
+function diagClear(){ $("diag").className = "ab"; }
 
 function stamp(){
   var t = new Date();
@@ -746,13 +835,57 @@ function setupInit(){
   $("stage").style.left = "0px";
   $("stage").style.top = "0px";
 
-  var F = {sKey:"serviceKey", sRegion:"region", sLat:"lat", sLon:"lon",
-           sHours:"hours", sDays:"days", sInt:"intervalMin"};
+  /* 지점 드롭다운 채우기 (시도별 그룹) */
+  (function(){
+    var sel = $("sStn"), i, sido = null, og = null;
+    var o = document.createElement("option");
+    o.value = ""; o.textContent = "직접 입력 (좌표 수동)";
+    sel.appendChild(o);
+    for (i = 0; i < STN.length; i++){
+      if (STN[i][2] !== sido){
+        sido = STN[i][2];
+        og = document.createElement("optgroup");
+        og.label = sido;
+        sel.appendChild(og);
+      }
+      o = document.createElement("option");
+      o.value = String(i);
+      o.textContent = STN[i][0] + "  " + STN[i][1];
+      og.appendChild(o);
+    }
+  })();
+
   $("sKey").value = CONFIG.serviceKey;
   $("sRegion").value = CONFIG.region;
   $("sLat").value = CONFIG.lat; $("sLon").value = CONFIG.lon;
   $("sHours").value = CONFIG.hours; $("sDays").value = CONFIG.days;
   $("sInt").value = CONFIG.intervalMin;
+  (function(){
+    /* 저장된 좌표와 같은 격자인 지점이 있으면 드롭다운에 표시합니다 */
+    var g = toGrid(CONFIG.lat, CONFIG.lon), i, gg;
+    for (i = 0; i < STN.length; i++){
+      gg = toGrid(STN[i][3], STN[i][4]);
+      if (gg[0] === g[0] && gg[1] === g[1]){ $("sStn").value = String(i); break; }
+    }
+  })();
+
+  $("sStn").addEventListener("change", function(){
+    var v = $("sStn").value;
+    if (v === "") return;                 /* 직접 입력 */
+    var st = STN[parseInt(v, 10)];
+    $("sLat").value = st[3];
+    $("sLon").value = st[4];
+    if (!$("sRegion").value.trim() || $("sRegion").dataset.auto === "1"){
+      $("sRegion").value = st[1];
+    } else {
+      $("sRegion").value = st[1];         /* 지점 바꾸면 이름도 따라갑니다 */
+    }
+    $("sRegion").dataset.auto = "1";
+    pull();
+    if (CONFIG.serviceKey) cycle();       /* 즉시 실측값으로 확인 */
+  });
+  $("sRegion").addEventListener("input", function(){ $("sRegion").dataset.auto = "0"; });
+
   $("sWind").checked = CONFIG.show.wind; $("sHum").checked = CONFIG.show.humidity;
   $("sHourly").checked = CONFIG.show.hourly; $("sDaily").checked = CONFIG.show.daily;
   $("sTop").value = CONFIG.theme.top; $("sBot").value = CONFIG.theme.bottom;
@@ -811,6 +944,9 @@ function setupInit(){
       + '  displayMode: ' + JSON.stringify(c.displayMode) + '\n'
       + '};';
   }
+
+  $("sLat").addEventListener("input", function(){ $("sStn").value = ""; });
+  $("sLon").addEventListener("input", function(){ $("sStn").value = ""; });
 
   var ids = ["sKey","sRegion","sLat","sLon","sHours","sDays","sInt",
              "sTop","sBot","sInk","sDim"];
