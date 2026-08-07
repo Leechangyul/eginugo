@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" style="background:#2B8DE6">
 <head>
 <meta charset="utf-8">
 <meta name="robots" content="noindex, nofollow, noarchive">
@@ -24,10 +24,11 @@
   ============================================================================
 -->
 <style>
-html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#000;
+html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;
   font-family:"Malgun Gothic","Noto Sans KR","Apple SD Gothic Neo",sans-serif;
   cursor:none;-webkit-user-select:none;user-select:none}
 
+body{background:#2B8DE6}
 #stage{position:absolute;left:0;top:0;width:384px;height:432px;overflow:hidden;
   background:#2B8DE6;-webkit-transform-origin:0 0;transform-origin:0 0}
 #glow{position:absolute;left:0;top:0;width:384px;height:432px}
@@ -47,7 +48,7 @@ html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#
   font-size:66px;font-weight:bold;color:#fff;white-space:nowrap}
 #temp .u{font-size:33px;vertical-align:top;line-height:44px}
 .col{position:absolute;top:0;width:80px;height:74px;text-align:center}
-#cWind{right:88px}
+#cLeft{right:88px}
 #cHum{right:0}
 .cv{font-size:29px;font-weight:bold;color:#fff;line-height:44px;white-space:nowrap}
 .cv i{font-size:16px;font-style:normal;color:#EEF8FF}
@@ -147,9 +148,9 @@ body.setup #setup{display:block}
 
   <div class="ab" id="main">
     <div id="temp">--<span class="u">&deg;C</span></div>
-    <div class="col" id="cWind">
-      <div class="cv"><span id="windv">--</span><i>m/s</i></div>
-      <div class="cl">바람</div>
+    <div class="col" id="cLeft">
+      <div class="cv"><span id="lval">--</span><i id="lunit">㎍</i></div>
+      <div class="cl" id="llab">미세먼지</div>
     </div>
     <div class="col" id="cHum">
       <div class="cv"><span id="humv">--</span><i>%</i></div>
@@ -175,7 +176,7 @@ body.setup #setup{display:block}
 </div>
 
 <div id="setup"><div class="in">
-  <h1>전광판 설정</h1>
+  <h1>전광판 설정 <span class="tag" id="verTag" style="font-size:12px"></span></h1>
   <p class="sb">여기서 고친 값은 <b>미리보기에만</b> 적용됩니다.
     아래 <b>설정 코드 복사</b> 로 받아 이 파일 상단 CONFIG 블록에 붙여넣어야 실제로 저장됩니다.</p>
 
@@ -183,10 +184,24 @@ body.setup #setup{display:block}
     <div class="p">
       <h2>기상청 인증키</h2>
       <div class="r"><label for="sKey">인증키</label>
-        <input type="text" id="sKey" placeholder="일반 인증키(Decoding)"></div>
+        <input type="text" id="sKey" placeholder="일반 인증키(Decoding)">
+        <button class="mini" id="sKeyClear">지우기</button></div>
       <div class="r"><button id="sTest">API 3종 테스트</button>
-        <span class="tag" id="sKeyTag">미확인</span></div>
-      <p class="hint">반드시 <b>Decoding</b> 키를 쓰세요. Encoding 키는 인증 실패합니다.</p>
+        <span class="tag" id="sKeyTag">미확인</span>
+        <span class="tag" id="sKeyMem">기억 안 함</span></div>
+      <div class="r">
+        <label style="min-width:0;display:flex;gap:6px;align-items:center;cursor:pointer">
+          <input type="checkbox" id="sKeyInFile">
+          <span>config.json 에 인증키 포함</span></label>
+      </div>
+      <p class="hint">반드시 <b>Decoding</b> 키를 쓰세요. Encoding 키는 인증 실패합니다.<br>
+        입력한 키는 <b>이 브라우저가 기억</b>하므로 다시 칠 필요가 없습니다.<br>
+        <b>체크를 끄면</b> 공개 저장소에 키가 남지 않습니다. 대신 아래에 나오는
+        <b>전광판 주소</b>를 PlayerMaster 에 한 번 넣어야 합니다.</p>
+      <div class="r" id="sUrlRow" style="display:none">
+        <input type="text" id="sUrl" readonly style="flex:1;font-size:12.5px">
+        <button class="mini" id="sUrlCopy">주소 복사</button>
+      </div>
       <pre id="sLog" style="display:none"></pre>
     </div>
 
@@ -211,12 +226,45 @@ body.setup #setup{display:block}
 
     <div class="p">
       <h2>표시 항목</h2>
-      <div class="ck">
-        <label><input type="checkbox" id="sWind"> 바람</label>
+      <div class="r">
+        <label>좌측 칸</label>
+        <label style="min-width:0;display:flex;gap:5px;align-items:center;cursor:pointer">
+          <input type="radio" name="lf" id="lfDust" value="dust"> 미세먼지</label>
+        <label style="min-width:0;display:flex;gap:5px;align-items:center;cursor:pointer">
+          <input type="radio" name="lf" id="lfWind" value="wind"> 바람</label>
+        <label style="min-width:0;display:flex;gap:5px;align-items:center;cursor:pointer">
+          <input type="radio" name="lf" id="lfNone" value="none"> 없음</label>
+      </div>
+      <div class="ck" style="margin-top:6px">
         <label><input type="checkbox" id="sHum"> 습도</label>
         <label><input type="checkbox" id="sHourly"> 시간별</label>
         <label><input type="checkbox" id="sDaily"> 주간예보</label>
       </div>
+      <p class="hint">가로 폭이 좁아 기온 옆에는 <b>두 칸까지만</b> 들어갑니다.
+        그래서 좌측 칸은 하나만 고릅니다.</p>
+
+      <div class="r" style="margin-top:12px">
+        <label for="sSido">측정소</label>
+        <select id="sSido" style="padding:7px 9px;border:1px solid #dcdcd8;
+          border-radius:6px;font:inherit;background:#fff"></select>
+        <select id="sStation" style="flex:1;min-width:140px;padding:7px 9px;
+          border:1px solid #dcdcd8;border-radius:6px;font:inherit;background:#fff">
+          <option value="">— 목록 불러오기를 누르세요 —</option>
+        </select>
+        <button class="mini" id="sAirLoad">목록 불러오기</button>
+      </div>
+      <div class="r">
+        <label>표출 항목</label>
+        <label style="min-width:0;display:flex;gap:5px;align-items:center;cursor:pointer">
+          <input type="radio" name="pm" id="pm10" value="pm10"> 미세먼지 PM10</label>
+        <label style="min-width:0;display:flex;gap:5px;align-items:center;cursor:pointer">
+          <input type="radio" name="pm" id="pm25" value="pm25"> 초미세먼지 PM2.5</label>
+        <span class="tag" id="airTag">미확인</span>
+      </div>
+      <p class="hint"><b>에어코리아 활용신청이 따로 필요합니다.</b>
+        공공데이터포털에서 <code>한국환경공단_에어코리아_대기오염정보 조회 서비스</code>
+        를 검색해 활용신청하세요. <b>인증키는 지금 쓰는 것 그대로</b>입니다.<br>
+        시도를 고르고 <b>목록 불러오기</b> 를 누르면 실제 측정소 이름이 채워집니다.</p>
       <div class="r" style="margin-top:11px">
         <label for="sHours">시간별 개수</label><input type="number" id="sHours" min="2" max="6">
         <label for="sDays" style="min-width:86px">주간 일수</label>
@@ -249,25 +297,47 @@ body.setup #setup{display:block}
     </div>
 
     <div class="p">
+      <h2>GitHub 자동 저장 <span class="tag" id="ghTag">미설정</span></h2>
+      <div class="r"><label for="ghRepo">저장소</label>
+        <input type="text" id="ghRepo" placeholder="예: Leechangyul/disp-7f3a"></div>
+      <div class="r"><label for="ghTok">토큰</label>
+        <input type="text" id="ghTok" placeholder="github_pat_... (한 번만 입력)"></div>
+      <div class="r">
+        <button id="ghTest">연결 확인</button>
+        <button id="ghForget">토큰 지우기</button>
+      </div>
+      <p class="hint">
+        <b>토큰 만들기 (한 번만):</b>
+        GitHub → 우측 상단 프로필 → Settings → 맨 아래 Developer settings →
+        Personal access tokens → <b>Fine-grained tokens</b> → Generate new token<br>
+        · Repository access: <b>Only select repositories</b> → 이 저장소 하나만<br>
+        · Permissions → Repository permissions → <b>Contents: Read and write</b><br>
+        · 만료일은 원하는 대로 (만료되면 다시 발급해 넣으면 됩니다)<br>
+        토큰은 <b>이 브라우저에만</b> 저장되며 전광판 파일에는 들어가지 않습니다.
+      </p>
+    </div>
+
+    <div class="p">
       <h2>적용하기</h2>
       <div class="r">
-        <button class="pri" id="sCopyJson">config.json 복사 (호스팅용)</button>
-        <button id="sCopy">CONFIG 코드 복사 (단일파일용)</button>
+        <button class="pri" id="ghSave" style="font-weight:600">GitHub에 바로 저장</button>
       </div>
       <div class="r"><span id="msg"></span></div>
-      <p class="hint" style="margin-top:0"><b>호스팅(GitHub Pages 등)으로 쓰는 경우</b></p>
-      <ol>
-        <li><b>config.json 복사</b> 를 누릅니다.</li>
-        <li>저장소의 <code>config.json</code> 을 웹에서 열어 전체를 지우고 붙여넣습니다.</li>
-        <li>Commit 하면 1~2분 뒤 전광판에 반영됩니다. HTML 은 건드리지 않습니다.</li>
-      </ol>
-      <p class="hint"><b>USB·로컬 파일로 쓰는 경우</b></p>
-      <ol>
-        <li><b>CONFIG 코드 복사</b> 를 누릅니다.</li>
-        <li>이 HTML 을 메모장으로 열어 상단 <code>var CONFIG = {</code> 부터
-            <code>};</code> 까지를 지우고 붙여넣습니다.</li>
-        <li>저장한 뒤 A200 에 다시 복사합니다.</li>
-      </ol>
+      <p class="hint" style="margin-top:2px">위 버튼 하나로 커밋까지 끝납니다.
+        1~2분 뒤 전광판에 반영됩니다.</p>
+      <details style="margin-top:10px">
+        <summary style="cursor:pointer;font-size:13.5px;color:#6b6b66">
+          수동으로 하려면 (토큰 없이)</summary>
+        <div class="r" style="margin-top:9px">
+          <button id="sCopyJson">config.json 복사</button>
+          <button id="sCopy">CONFIG 코드 복사 (단일파일용)</button>
+        </div>
+      </details>
+      <p class="hint" style="margin-top:0">
+        <b>config.json 복사</b> → 저장소의 <code>config.json</code> 을 웹에서 열어
+        전체 교체 후 Commit.<br>
+        <b>CONFIG 코드 복사</b> → USB·로컬 파일로 쓸 때. 이 HTML 상단
+        <code>var CONFIG = {</code> 블록을 교체.</p>
       <pre id="sOut"></pre>
     </div>
   </div>
@@ -297,7 +367,11 @@ var CONFIG = {
   hours: 4,                    // 시간별 개수 ('지금' 제외)
   days: 4,                     // 주간예보 일수 (단기예보 상한 4)
 
-  show: { wind: true, humidity: true, hourly: true, daily: true },
+  // left: 좌측 칸에 무엇을 넣을지  "dust"(미세먼지) | "wind"(바람) | "none"
+  show: { left: "dust", humidity: true, hourly: true, daily: true },
+
+  // 미세먼지 (에어코리아). 같은 인증키를 쓰며 활용신청만 추가하면 됩니다.
+  air: { sido: "경북", station: "", pm: "pm10" },   // pm10=미세먼지, pm25=초미세먼지
 
   theme: { top: "#136DE0", bottom: "#4BB7EA", glow: true,
            ink: "#FFFFFF", dim: "#EEF8FF" },
@@ -404,7 +478,37 @@ var BASE = "https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/";
 var STAGE_W = 384, STAGE_H = 432, GW = 352, GH = 30;
 var VIL = [2,5,8,11,14,17,20,23];
 
+/* 재로드 직후 첫 페인트를 배경색으로 채워 흰 섬광을 없앱니다. */
+try {
+  var _bg = localStorage.getItem("ledboard.bg");
+  if (_bg) document.documentElement.style.background = _bg;
+} catch (e) {}
+
+/* 배포된 파일이 최신인지 확인하기 위한 표시.
+   설정 화면 상단과 ?ver 로 확인할 수 있습니다. */
+var VERSION = "2026-08-07 10:22";
+
 var $ = function(id){ return document.getElementById(id); };
+
+/* 설정 화면이 이 브라우저에 기억하는 값의 키.
+   var 는 선언만 호이스팅되고 대입은 안 되므로 사용처보다 앞에 둬야 합니다. */
+var LS_REPO = "ledboard.gh.repo", LS_TOK = "ledboard.gh.token",
+    LS_KMA  = "ledboard.kma.key",  LS_DATA = "ledboard.last";
+
+/* A200 은 프로그램이 루프할 때 웹페이지를 다시 로드합니다.
+   그때마다 빈 화면(--)이 보이지 않도록 마지막 정상값을 기기에 남겨둡니다. */
+function saveCache(d){
+  try { localStorage.setItem(LS_DATA,
+        JSON.stringify({t: new Date().getTime(), d: d})); } catch (e) {}
+}
+function loadCache(){
+  try {
+    var o = JSON.parse(localStorage.getItem(LS_DATA));
+    if (o && o.d && typeof o.d.temp === "number"
+        && (new Date().getTime() - o.t) < 6 * 3600000) return o;   /* 6시간 이내만 */
+  } catch (e) {}
+  return null;
+}
 /* ?setup=1 / ?setup / #setup / ?setup?=1 등 어떤 형태로 써도 인식합니다.
    물음표를 하나 더 붙이는 실수가 흔해 관대하게 받습니다. */
 var isSetup = /setup/i.test(location.search + location.hash);
@@ -424,16 +528,38 @@ function mergeCfg(dst, src){
   }
 }
 
+/* 인증키는 세 곳에서 올 수 있습니다. 앞의 것이 우선합니다.
+     1) 주소의 ?k=...      전광판 주소에만 넣어두면 공개 파일에 키가 안 남습니다
+     2) config.json        간편하지만 저장소에 키가 그대로 보입니다
+     3) 아래 CONFIG        USB·로컬 파일용 */
+function keyFromUrl(){
+  var m = /[?&]k=([^&#]+)/.exec(location.search);
+  if (!m) return "";
+  try { return decodeURIComponent(m[1]); } catch (e) { return m[1]; }
+}
+
 function loadOverride(done){
-  if (location.protocol === "file:"){ done(); return; }   /* file:// 은 조회 불가 */
+  if (location.protocol === "file:"){
+    var uk0 = keyFromUrl();
+    if (uk0) CONFIG.serviceKey = uk0;
+    done();
+    return;                                   /* file:// 은 config.json 조회 불가 */
+  }
   var x = new XMLHttpRequest();
   x.open("GET", "config.json?_=" + Date.now(), true);
   x.timeout = 10000;
   x.onreadystatechange = function(){
     if (x.readyState !== 4) return;
     if (x.status >= 200 && x.status < 300){
-      try { mergeCfg(CONFIG, JSON.parse(x.responseText)); } catch (e) {}
+      try {
+        var o = JSON.parse(x.responseText);
+        /* config.json 의 빈 인증키가 내장값을 지우지 않도록 합니다 */
+        if (o && !String(o.serviceKey || "").trim()) delete o.serviceKey;
+        mergeCfg(CONFIG, o);
+      } catch (e) {}
     }
+    var uk = keyFromUrl();
+    if (uk) CONFIG.serviceKey = uk;
     done();
   };
   x.onerror = done; x.ontimeout = done;
@@ -502,7 +628,7 @@ function vilBases(now, n){
 function get(url, cb){
   var x = new XMLHttpRequest();
   x.open("GET", url, true);
-  x.timeout = 20000;
+  x.timeout = 40000;          /* A200 회선이 느려 1000행 응답이 20초를 넘기는 일이 있습니다 */
   x.onreadystatechange = function(){
     if (x.readyState !== 4) return;
     if (x.status < 200 || x.status >= 300){ cb("HTTP " + (x.status||0)); return; }
@@ -512,9 +638,14 @@ function get(url, cb){
     try {
       var h = j.response.header;
       if (h.resultCode !== "00"){ cb(h.resultCode + " " + h.resultMsg); return; }
-      var it = j.response.body.items.item;
+      var b = j.response.body;
+      /* 기상청은 body.items.item, 에어코리아는 body.items 가 바로 배열입니다.
+         두 형태를 모두 받아들입니다. */
+      var it = (b && b.items && b.items.item !== undefined) ? b.items.item
+             : (b ? b.items : null);
+      if (it === null || it === undefined){ cb("응답에 항목이 없습니다"); return; }
       cb(null, it.length !== undefined ? it : [it]);
-    } catch(e){ cb("응답 구조가 예상과 다릅니다"); }
+    } catch(e){ cb("응답 구조가 예상과 다릅니다: " + e); }
   };
   x.onerror = function(){ cb("연결 실패 (CORS 또는 네트워크)"); };
   x.ontimeout = function(){ cb("응답 시간 초과"); };
@@ -542,6 +673,47 @@ function tryBases(op, bases, nx, ny, rows, cb){
   step();
 }
 
+var SIDO = ["서울","부산","대구","인천","광주","대전","울산","세종",
+            "경기","강원","충북","충남","전북","전남","경북","경남","제주"];
+var AIR_URL = "https://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getCtprvnRltmMesureDnsty";
+var GRADE = {"1":"좋음","2":"보통","3":"나쁨","4":"매우나쁨"};
+
+/* 시도 단위로 한 번에 받아 원하는 측정소를 골라냅니다.
+   좌표->측정소 변환 API 를 따로 쓰지 않아도 되고, 설정 화면에서
+   실제 측정소 목록을 그대로 보여줄 수 있습니다. */
+function fetchAir(cb){
+  var a = CONFIG.air || {};
+  if (!a.sido){ cb("시도가 지정되지 않았습니다."); return; }
+  var url = AIR_URL + "?serviceKey=" + encodeURIComponent(CONFIG.serviceKey)
+          + "&returnType=json&numOfRows=200&pageNo=1&ver=1.3"
+          + "&sidoName=" + encodeURIComponent(a.sido) + "&_=" + Date.now();
+  get(url, function(err, items){
+    if (err){ cb(err); return; }
+    cb(null, items);
+  });
+}
+
+function pickStation(items, want){
+  var i;
+  if (want){
+    for (i = 0; i < items.length; i++){
+      if (items[i].stationName === want) return items[i];
+    }
+  }
+  return items.length ? items[0] : null;   /* 지정 측정소가 없으면 첫 번째 */
+}
+
+function airValue(st){
+  if (!st) return null;
+  var pm = (CONFIG.air && CONFIG.air.pm === "pm25") ? "pm25" : "pm10";
+  var v = st[pm + "Value"], g = st[pm + "Grade"];
+  if (v === undefined || v === null || v === "-" || v === "") return null;
+  var n = parseFloat(v);
+  if (isNaN(n) || n < 0) return null;
+  return {value: Math.round(n), grade: String(g || ""), pm: pm,
+          station: st.stationName || "", time: st.dataTime || ""};
+}
+
 function iconOf(sky, pty){
   var p = String(pty == null ? "0" : pty);
   if (p==="1"||p==="4"||p==="5") return "rain";
@@ -560,13 +732,15 @@ function num(v){
 }
 
 /* ---------------- 수집 ---------------- */
-function collect(done){
+function collect(done, prog){
   if (!CONFIG.serviceKey){
     done("인증키가 비어 있습니다. 파일 상단 CONFIG.serviceKey 를 채우세요."); return;
   }
   var g = toGrid(CONFIG.lat, CONFIG.lon), nx = g[0], ny = g[1];
   var now = new Date();
-  var out = { region: CONFIG.region, grid: nx+","+ny, advisory: null };
+  var out = { region: CONFIG.region, grid: nx + "," + ny, advisory: null,
+              date: (now.getMonth()+1) + "/" + now.getDate()
+                    + "(" + DOW[now.getDay()] + ")" };
 
   tryBases("getUltraSrtNcst", ncstBases(now, 6), nx, ny, 60, function(e1, items){
     if (e1){ done("실황: " + e1); return; }
@@ -577,6 +751,7 @@ function collect(done){
     out.temp = Math.round(t*10)/10;
     out.humidity = num(v.REH) === null ? null : Math.round(num(v.REH));
     out.wind = num(v.WSD) === null ? null : Math.round(num(v.WSD)*10)/10;
+    if (prog) prog(out);              /* 기온·습도·바람 먼저 표출 */
 
     tryBases("getUltraSrtFcst", ufcstBases(now, 4), nx, ny, 300, function(e2, uf){
       var sky = null, pty = null;
@@ -593,6 +768,7 @@ function collect(done){
         }
       }
       out.icon = iconOf(sky, pty);
+      if (prog) prog(out);            /* 날씨 아이콘 표출 */
 
       tryBases("getVilageFcst", vilBases(now, 3), nx, ny, 1000, function(e3, vf){
         if (e3){ done("단기예보: " + e3, out); return; }
@@ -645,18 +821,42 @@ function collect(done){
         }
 
         out.date = (now.getMonth()+1) + "/" + now.getDate() + "(" + DOW[now.getDay()] + ")";
-        done(null, out);
+
+        if ((CONFIG.show.left || "dust") !== "dust"){ done(null, out); return; }
+
+        /* 미세먼지는 실패해도 나머지 표출을 막지 않습니다. */
+        fetchAir(function(ae, items){
+          if (!ae && items){
+            var av = airValue(pickStation(items, (CONFIG.air || {}).station));
+            if (av) out.air = av;
+          } else if (ae){
+            out.airErr = String(ae);
+          }
+          done(null, out);
+        });
       });
     });
   });
 }
 
 /* ---------------- 렌더 ---------------- */
+/* 같은 내용을 다시 그리면 DOM 을 갈아엎느라 한 프레임씩 깜박입니다.
+   직전에 그린 내용을 기억해 두고 바뀐 부분만 손댑니다. */
+var RSIG = {theme:"", hourly:"", daily:"", icon:"", bg:""};
+
 var LAY = {div1:214, hrv:220, hrg:248, hrl:282, div2:312, wkttl:316, wk:339};
 var HOURLY_H = 98;
 
 function applyTheme(root){
   var th = CONFIG.theme, sh = CONFIG.show;
+  var sig = JSON.stringify([th, sh]);
+  if (sig === RSIG.theme) return;
+  RSIG.theme = sig;
+  /* 다음 재로드 때 첫 페인트 색을 맞춰 섬광을 줄입니다 */
+  try {
+    document.documentElement.style.background = th.top;
+    localStorage.setItem("ledboard.bg", th.top);
+  } catch (e) {}
   var st = root.querySelector("#stage") || $("stage");
   var q = function(sel){ return root.querySelector(sel); };
 
@@ -675,9 +875,19 @@ function applyTheme(root){
   var cls = root.querySelectorAll(".cl"), i;
   for (i=0;i<cls.length;i++) cls[i].style.color = th.dim;
 
-  q("#cWind").style.display = sh.wind ? "block" : "none";
+  var left = sh.left || (sh.wind ? "wind" : "none");   /* 옛 설정 호환 */
+  q("#cLeft").style.display = (left === "none") ? "none" : "block";
   q("#cHum").style.display  = sh.humidity ? "block" : "none";
-  q("#cWind").style.right = sh.humidity ? "88px" : "0px";
+  q("#cLeft").style.right = sh.humidity ? "88px" : "0px";
+  q("#llab").textContent = (left === "wind") ? "바람"
+    : (((CONFIG.air || {}).pm === "pm25") ? "초미세먼지" : "미세먼지");
+  q("#lunit").textContent = (left === "wind") ? "m/s" : "㎍";
+  /* 라벨이 칸을 넘치면 줄입니다 (초미세먼지는 5글자) */
+  (function(){
+    var el = q("#llab"), f = 19;
+    el.style.fontSize = f + "px";
+    while (f > 13 && el.scrollWidth > 80){ f -= 1; el.style.fontSize = f + "px"; }
+  })();
 
   var hr = ["#div1","#hrv","#hrg","#hrl"];
   for (i=0;i<hr.length;i++) q(hr[i]).style.display = sh.hourly ? "block" : "none";
@@ -693,7 +903,8 @@ function applyTheme(root){
 function fitTemp(root){
   var el = root.querySelector("#temp");
   var u = el.getElementsByTagName("span")[0];
-  var n = (CONFIG.show.wind?1:0) + (CONFIG.show.humidity?1:0);
+  var lf = CONFIG.show.left || (CONFIG.show.wind ? "wind" : "none");
+  var n = (lf !== "none" ? 1 : 0) + (CONFIG.show.humidity ? 1 : 0);
   var limit = 352 - n*88 - 12, f = 66;
   el.style.fontSize = f + "px";
   if (u) u.style.fontSize = Math.round(f*0.50) + "px";
@@ -705,11 +916,16 @@ function fitTemp(root){
 }
 
 function drawHourly(root, list){
+  /* 데이터가 없으면 기존 화면을 유지합니다.
+     먼저 지우고 나면 수집 실패 때 그래프가 사라집니다. */
+  if (!list || list.length < 2) return;
+  var sig = JSON.stringify(list) + "|" + CONFIG.theme.ink + CONFIG.theme.dim;
+  if (sig === RSIG.hourly) return;          /* 내용이 같으면 손대지 않습니다 */
+  RSIG.hourly = sig;
   var vv = root.querySelector("#hrv"), ll = root.querySelector("#hrl");
   vv.innerHTML = ""; ll.innerHTML = "";
   root.querySelector("#curve").setAttribute("points","");
   root.querySelector("#dots").innerHTML = "";
-  if (!list || list.length < 2) return;
 
   var n = list.length, slot = GW/n, i;
   var lo = list[0].temp, hi = list[0].temp;
@@ -751,9 +967,12 @@ function drawHourly(root, list){
 }
 
 function drawDaily(root, list){
+  if (!list || !list.length) return;      /* 같은 이유로 지우지 않습니다 */
+  var sig = JSON.stringify(list) + "|" + CONFIG.theme.ink + CONFIG.theme.dim;
+  if (sig === RSIG.daily) return;
+  RSIG.daily = sig;
   var box = root.querySelector("#wk");
   box.innerHTML = "";
-  if (!list || !list.length) return;
   var n = list.length, slot = 352/n;
   for (var i=0;i<n;i++){
     var d = list[i];
@@ -777,10 +996,30 @@ function render(root, d){
   root.querySelector("#temp").innerHTML =
     (Math.round(d.temp*10)/10).toFixed(1) + '<span class="u">&deg;C</span>';
   fitTemp(root);
-  root.querySelector("#windv").innerHTML = (d.wind == null) ? "--" : d.wind.toFixed(1);
+  var lf2 = CONFIG.show.left || (CONFIG.show.wind ? "wind" : "none");
+  var lv = root.querySelector("#lval");
+  if (lf2 === "wind"){
+    lv.innerHTML = (d.wind == null) ? "--" : d.wind.toFixed(1);
+    lv.style.color = CONFIG.theme.ink;
+  } else if (lf2 === "dust"){
+    if (d.air && d.air.value != null){
+      lv.innerHTML = d.air.value;
+      /* 나쁨 이상만 색으로 강조합니다. 좋음·보통까지 색을 넣으면
+         파란 배경에서 대비가 떨어져 오히려 안 읽힙니다. */
+      lv.style.color = (d.air.grade === "4") ? "#FF8A6B"
+                     : (d.air.grade === "3") ? "#FFD23F"
+                     : CONFIG.theme.ink;
+    } else {
+      lv.innerHTML = "--";
+      lv.style.color = CONFIG.theme.ink;
+    }
+  }
   root.querySelector("#humv").innerHTML  = (d.humidity == null) ? "--" : d.humidity;
   var ik = ICON[d.icon+"-lg"] ? d.icon : "sun";
-  root.querySelector("#wxicon").src = ICON[ik+"-lg"];
+  if (RSIG.icon !== ik){
+    RSIG.icon = ik;
+    root.querySelector("#wxicon").src = ICON[ik+"-lg"];
+  }
   drawHourly(root, d.hourly);
   drawDaily(root, d.daily);
 }
@@ -791,11 +1030,16 @@ function diag(t, dt){
 }
 function diagClear(){ $("diag").className = "ab"; }
 
+/* 주소 끝에 ?ver 를 붙이면 우하단에 파일 버전이 표시됩니다.
+   A200 에 올라간 파일이 최신인지 확인할 때 씁니다. */
+function verFromUrl(){ return /[?&]ver\b/.test(location.search); }
+
 function stamp(){
   var t = new Date();
   var stale = lastOkAt > 0 && (t.getTime()-lastOkAt) > CONFIG.intervalMin*60000*3;
   $("stamp").style.color = stale ? "#FFC9BC" : "rgba(255,255,255,.55)";
-  $("stamp").innerHTML = p2(t.getHours())+":"+p2(t.getMinutes()) + (stale ? " 갱신지연" : "");
+  $("stamp").innerHTML = (verFromUrl() ? VERSION + "  " : "")
+    + p2(t.getHours())+":"+p2(t.getMinutes()) + (stale ? " 갱신지연" : "");
 }
 
 function rescale(){
@@ -814,19 +1058,48 @@ function rescale(){
 }
 window.onresize = rescale;
 
+/* 부분 실패로 화면 일부가 비지 않도록, 이번에 받은 값만 덮어씁니다.
+   시간별·주간예보는 빈 목록이 오면 무시하고 직전 값을 그대로 둡니다. */
+function mergeData(prev, next){
+  var out = {}, k;
+  for (k in (prev || {})) out[k] = prev[k];
+  for (k in next){
+    if (next[k] === undefined) continue;
+    if ((k === "hourly" || k === "daily") && (!next[k] || !next[k].length)) continue;
+    if (k === "air" && !next[k]) continue;
+    out[k] = next[k];
+  }
+  return out;
+}
+
+function apply(data){
+  if (!data || data.temp == null) return;
+  lastData = mergeData(lastData, data);
+  lastOkAt = new Date().getTime();
+  render(document, lastData);
+}
+
 function cycle(){
   collect(function(err, data){
-    if (data && data.temp != null){
-      lastData = data; lastOkAt = new Date().getTime();
-      render(document, data);
+    apply(data);
+    if (err){
+      diag("수집 실패", err);
+    } else if (data && data.airErr){
+      /* 나머지는 정상이므로 화면은 유지하고 원인만 알립니다. */
+      diag("미세먼지 실패", data.airErr
+         + "  (에어코리아 활용신청 / 측정소 확인)");
+      saveCache(lastData);
+    } else {
+      diagClear();
+      saveCache(lastData);
     }
-    if (err){ diag("수집 실패", err); } else { diagClear(); }
-  });
+  }, apply);
 }
 
 /* ============================ 설정 화면 ============================ */
 function setupInit(){
   document.body.className = "setup";
+  $("verTag").textContent = "파일 버전 " + VERSION;
 
   var pv = $("pvbox");
   pv.appendChild($("stage"));
@@ -855,7 +1128,19 @@ function setupInit(){
     }
   })();
 
-  $("sKey").value = CONFIG.serviceKey;
+  $("ghRepo").value = lsGet(LS_REPO);
+  $("ghTok").value  = lsGet(LS_TOK);
+  if (lsGet(LS_REPO) && lsGet(LS_TOK)) ghTag("저장됨 (연결 확인 권장)");
+
+  /* 인증키: config.json 값이 없으면 이 브라우저가 기억한 값을 씁니다 */
+  $("sKey").value = CONFIG.serviceKey || lsGet(LS_KMA);
+  CONFIG.serviceKey = $("sKey").value;
+  $("sKeyMem").textContent = lsGet(LS_KMA) ? "이 브라우저에 기억됨" : "기억 안 함";
+  /* 기본은 '포함'입니다. 설정 화면을 로컬 파일로 열면 config.json 을 못 읽어
+     키가 빈 상태로 시작하는데, 그때 체크가 꺼지면 저장 시 키가 지워집니다.
+     주소에 ?k= 를 쓰는 경우에만 해제합니다. */
+  $("sKeyInFile").checked = !keyFromUrl();
+
   $("sRegion").value = CONFIG.region;
   $("sLat").value = CONFIG.lat; $("sLon").value = CONFIG.lon;
   $("sHours").value = CONFIG.hours; $("sDays").value = CONFIG.days;
@@ -886,22 +1171,62 @@ function setupInit(){
   });
   $("sRegion").addEventListener("input", function(){ $("sRegion").dataset.auto = "0"; });
 
-  $("sWind").checked = CONFIG.show.wind; $("sHum").checked = CONFIG.show.humidity;
+  /* 시도 목록 채우기 */
+  (function(){
+    var sel = $("sSido"), i, o;
+    for (i = 0; i < SIDO.length; i++){
+      o = document.createElement("option");
+      o.value = SIDO[i]; o.textContent = SIDO[i];
+      sel.appendChild(o);
+    }
+    sel.value = (CONFIG.air && CONFIG.air.sido) || "경북";
+  })();
+  (function(){
+    /* 저장된 측정소가 있으면 목록을 못 불러왔어도 표시해 둡니다 */
+    var st = (CONFIG.air || {}).station;
+    if (st){
+      var o = document.createElement("option");
+      o.value = st; o.textContent = st;
+      $("sStation").innerHTML = "";
+      $("sStation").appendChild(o);
+    }
+  })();
+  var lf0 = CONFIG.show.left || (CONFIG.show.wind ? "wind" : "none");
+  $(lf0 === "wind" ? "lfWind" : lf0 === "none" ? "lfNone" : "lfDust").checked = true;
+  $((CONFIG.air || {}).pm === "pm25" ? "pm25" : "pm10").checked = true;
+
+  $("sHum").checked = CONFIG.show.humidity;
   $("sHourly").checked = CONFIG.show.hourly; $("sDaily").checked = CONFIG.show.daily;
   $("sTop").value = CONFIG.theme.top; $("sBot").value = CONFIG.theme.bottom;
   $("sInk").value = CONFIG.theme.ink; $("sDim").value = CONFIG.theme.dim;
   $("sGlow").checked = CONFIG.theme.glow;
 
+  function boardUrl(){
+    var base = location.href.split("?")[0].split("#")[0];
+    var k = $("sKey").value.trim();
+    return base + (k && !$("sKeyInFile").checked
+                   ? "?k=" + encodeURIComponent(k) : "");
+  }
+
   function pull(){
     CONFIG.serviceKey = $("sKey").value.trim();
+    if (CONFIG.serviceKey) lsSet(LS_KMA, CONFIG.serviceKey);
+    $("sKeyMem").textContent = lsGet(LS_KMA) ? "이 브라우저에 기억됨" : "기억 안 함";
+    $("sUrlRow").style.display = $("sKeyInFile").checked ? "none" : "flex";
+    $("sUrl").value = boardUrl();
     CONFIG.region = $("sRegion").value.trim();
     CONFIG.lat = parseFloat($("sLat").value);
     CONFIG.lon = parseFloat($("sLon").value);
     CONFIG.hours = parseInt($("sHours").value,10) || 4;
     CONFIG.days = parseInt($("sDays").value,10) || 4;
     CONFIG.intervalMin = parseInt($("sInt").value,10) || 10;
-    CONFIG.show = {wind:$("sWind").checked, humidity:$("sHum").checked,
+    CONFIG.show = {left: $("lfWind").checked ? "wind"
+                       : $("lfNone").checked ? "none" : "dust",
+                   humidity:$("sHum").checked,
                    hourly:$("sHourly").checked, daily:$("sDaily").checked};
+    CONFIG.air = {sido: $("sSido").value,
+                  station: $("sStation").value,
+                  pm: $("pm25").checked ? "pm25" : "pm10"};
     CONFIG.theme = {top:$("sTop").value, bottom:$("sBot").value,
                     glow:$("sGlow").checked, ink:$("sInk").value, dim:$("sDim").value};
 
@@ -951,8 +1276,51 @@ function setupInit(){
   var ids = ["sKey","sRegion","sLat","sLon","sHours","sDays","sInt",
              "sTop","sBot","sInk","sDim"];
   for (var i=0;i<ids.length;i++) $(ids[i]).addEventListener("input", pull);
-  ids = ["sWind","sHum","sHourly","sDaily","sGlow"];
+  ids = ["sHum","sHourly","sDaily","sGlow","sKeyInFile",
+         "lfDust","lfWind","lfNone","pm10","pm25","sSido","sStation"];
   for (i=0;i<ids.length;i++) $(ids[i]).addEventListener("change", pull);
+
+  $("sAirLoad").onclick = function(){
+    pull();
+    if (!CONFIG.serviceKey){ msgSet("인증키를 먼저 입력하세요.", "err"); return; }
+    $("airTag").textContent = "불러오는 중";
+    msgSet("측정소 목록을 불러오는 중…");
+    fetchAir(function(err, items){
+      if (err || !items || !items.length){
+        $("airTag").textContent = "실패";
+        msgSet("측정소 목록 실패: " + (err || "빈 응답")
+             + "  (에어코리아 활용신청을 하셨는지 확인하세요)", "err");
+        return;
+      }
+      var sel = $("sStation"), keep = CONFIG.air.station, i, o;
+      sel.innerHTML = "";
+      for (i = 0; i < items.length; i++){
+        o = document.createElement("option");
+        o.value = items[i].stationName;
+        var pv = items[i].pm10Value, p2 = items[i].pm25Value;
+        o.textContent = items[i].stationName
+          + "   PM10 " + (pv && pv !== "-" ? pv : "-")
+          + " / PM2.5 " + (p2 && p2 !== "-" ? p2 : "-");
+        sel.appendChild(o);
+      }
+      if (keep) sel.value = keep;
+      if (!sel.value) sel.selectedIndex = 0;
+      $("airTag").textContent = items.length + "개소";
+      msgSet("측정소 " + items.length + "개를 불러왔습니다. 가까운 곳을 고르세요.", "ok");
+      pull();
+      cycle();
+    });
+  };
+
+  $("sKeyClear").onclick = function(){
+    lsSet(LS_KMA, "");
+    $("sKey").value = "";
+    pull();
+    msgSet("이 브라우저에서 인증키를 지웠습니다.");
+  };
+  $("sUrlCopy").onclick = function(){
+    copyText(boardUrl(), "전광판 주소를 복사했습니다. PlayerMaster 에 붙여넣으세요.");
+  };
 
   $("pRef").onclick = function(){ $("sTop").value="#136de0"; $("sBot").value="#4bb7ea";
     $("sInk").value="#ffffff"; $("sDim").value="#eef8ff"; $("sGlow").checked=true; pull(); };
@@ -961,14 +1329,147 @@ function setupInit(){
   $("pNgt").onclick = function(){ $("sTop").value="#04203f"; $("sBot").value="#0a3a5e";
     $("sInk").value="#d8e8f5"; $("sDim").value="#8ab0cc"; $("sGlow").checked=false; pull(); };
 
+  /* ---------- GitHub 자동 저장 ---------- */
+  function lsGet(k){ try { return localStorage.getItem(k) || ""; } catch(e){ return ""; } }
+  function lsSet(k, v){ try { localStorage.setItem(k, v); } catch(e){} }
+
+  function b64utf8(str){
+    var bytes, bin = "", i;
+    if (window.TextEncoder){
+      bytes = new TextEncoder().encode(str);
+      for (i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+    } else {
+      bin = unescape(encodeURIComponent(str));
+    }
+    return btoa(bin);
+  }
+
+  function ghInfo(){
+    var r = $("ghRepo").value.trim().replace(/^https?:\/\/github\.com\//, "")
+                                    .replace(/\/$/, "");
+    if (!/^[\w.-]+\/[\w.-]+$/.test(r)) return null;
+    var t = $("ghTok").value.trim();
+    if (!t) return null;
+    return {repo: r, token: t};
+  }
+
+  function ghTag(txt, cls){
+    $("ghTag").textContent = txt;
+    $("ghTag").style.background = cls === "ok" ? "#e3f4ee"
+                                : cls === "no" ? "#fbeaea" : "#eef2f6";
+    $("ghTag").style.color = cls === "ok" ? "#0f6e56"
+                           : cls === "no" ? "#a32d2d" : "#6b6b66";
+  }
+
+  /* GitHub REST 는 CORS 를 허용하므로 브라우저에서 직접 호출됩니다. */
+  function ghReq(method, url, token, body, cb){
+    var x = new XMLHttpRequest();
+    x.open(method, url, true);
+    x.setRequestHeader("Accept", "application/vnd.github+json");
+    x.setRequestHeader("Authorization", "Bearer " + token);
+    if (body) x.setRequestHeader("Content-Type", "application/json");
+    x.timeout = 20000;
+    x.onreadystatechange = function(){
+      if (x.readyState !== 4) return;
+      var j = null;
+      try { j = JSON.parse(x.responseText); } catch(e){}
+      cb(x.status, j);
+    };
+    x.onerror   = function(){ cb(0, {message: "연결 실패"}); };
+    x.ontimeout = function(){ cb(0, {message: "응답 시간 초과"}); };
+    x.send(body ? JSON.stringify(body) : null);
+  }
+
+  function ghErr(st, j){
+    if (st === 401) return "토큰이 잘못되었거나 만료되었습니다.";
+    if (st === 403) return "권한이 없습니다. 토큰의 Contents 권한을 Read and write 로 두세요.";
+    if (st === 404) return "저장소나 config.json 을 찾을 수 없습니다. 저장소 이름과 " +
+                           "토큰의 Repository access 를 확인하세요.";
+    if (st === 409) return "다른 곳에서 먼저 수정되었습니다. 연결 확인 후 다시 시도하세요.";
+    return "오류 " + st + " " + ((j && j.message) || "");
+  }
+
+  $("ghTest").onclick = function(){
+    var g = ghInfo();
+    if (!g){ msgSet("저장소와 토큰을 모두 입력하세요.", "err"); ghTag("미설정"); return; }
+    ghTag("확인 중");
+    msgSet("연결 확인 중…");
+    ghReq("GET", "https://api.github.com/repos/" + g.repo
+                 + "/contents/config.json?ref=main&_=" + Date.now(),
+          g.token, null, function(st, j){
+      if (st === 200){
+        lsSet(LS_REPO, g.repo); lsSet(LS_TOK, g.token);
+        ghTag("연결됨", "ok");
+        msgSet("연결 정상입니다. 이제 [GitHub에 바로 저장] 을 쓸 수 있습니다.", "ok");
+      } else {
+        ghTag("실패", "no");
+        msgSet(ghErr(st, j), "err");
+      }
+    });
+  };
+
+  $("ghForget").onclick = function(){
+    lsSet(LS_TOK, ""); $("ghTok").value = "";
+    ghTag("미설정");
+    msgSet("이 브라우저에서 토큰을 지웠습니다.");
+  };
+
+  $("ghSave").onclick = function(){
+    pull();
+    /* 키를 비운 채로 저장해 전광판을 멈추게 하는 사고를 막습니다. */
+    if ($("sKeyInFile").checked && !CONFIG.serviceKey){
+      msgSet("인증키가 비어 있습니다. 이대로 저장하면 전광판이 멈춥니다. "
+           + "인증키를 입력하거나, 주소로 넘길 경우 위 체크를 해제하세요.", "err");
+      return;
+    }
+    var g = ghInfo();
+    if (!g){
+      msgSet("저장소와 토큰을 먼저 입력하고 [연결 확인] 을 누르세요.", "err");
+      return;
+    }
+    var body = jsonCode();
+    $("ghSave").disabled = true;
+    msgSet("현재 파일 확인 중…");
+
+    var base = "https://api.github.com/repos/" + g.repo + "/contents/config.json";
+    ghReq("GET", base + "?ref=main&_=" + Date.now(), g.token, null, function(st, j){
+      if (st !== 200 && st !== 404){
+        $("ghSave").disabled = false;
+        msgSet(ghErr(st, j), "err");
+        return;
+      }
+      var payload = {
+        message: "설정 변경 (" + CONFIG.region + ")",
+        content: b64utf8(body),
+        branch: "main"
+      };
+      if (st === 200 && j && j.sha) payload.sha = j.sha;   /* 기존 파일 덮어쓰기 */
+
+      msgSet("저장 중…");
+      ghReq("PUT", base, g.token, payload, function(st2, j2){
+        $("ghSave").disabled = false;
+        if (st2 === 200 || st2 === 201){
+          lsSet(LS_REPO, g.repo); lsSet(LS_TOK, g.token);
+          ghTag("연결됨", "ok");
+          msgSet("저장 완료. 1~2분 뒤 전광판에 반영됩니다.", "ok");
+        } else {
+          msgSet(ghErr(st2, j2), "err");
+        }
+      });
+    });
+  };
+
   function jsonCode(){
     var c = CONFIG;
     return JSON.stringify({
-      serviceKey: c.serviceKey, region: c.region, lat: c.lat, lon: c.lon,
+      serviceKey: $("sKeyInFile").checked ? c.serviceKey : "",
+      region: c.region, lat: c.lat, lon: c.lon,
       intervalMin: c.intervalMin, hours: c.hours, days: c.days,
       show: c.show, theme: c.theme, displayMode: c.displayMode
     }, null, 2);
   }
+
+  function msgSet(t, c){ $("msg").textContent = t; $("msg").className = c || ""; }
 
   function copyText(t, okMsg){
     if (navigator.clipboard && navigator.clipboard.writeText){
@@ -1035,9 +1536,20 @@ loadOverride(function(){
   if (isSetup){ setupInit(); return; }
   rescale();
   applyTheme(document);
-  render(document, {region: CONFIG.region, date: "", temp: 0,
-                    humidity: null, wind: null, icon: "sun", hourly: [], daily: []});
-  $("temp").innerHTML = '--<span class="u">&deg;C</span>';
+
+  /* 재로드 직후 빈 화면이 보이지 않도록 마지막 정상값을 먼저 그립니다.
+     새 데이터가 도착하면 곧바로 덮어씁니다. */
+  var cached = loadCache();
+  if (cached){
+    lastData = cached.d;
+    lastOkAt = cached.t;
+    render(document, lastData);
+  } else {
+    render(document, {region: CONFIG.region, date: "", temp: 0,
+                      humidity: null, wind: null, icon: "sun", hourly: [], daily: []});
+    $("temp").innerHTML = '--<span class="u">&deg;C</span>';
+  }
+
   cycle();
   setInterval(cycle, Math.max(5, CONFIG.intervalMin) * 60000);
   setInterval(stamp, 10000);
