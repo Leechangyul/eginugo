@@ -7,7 +7,7 @@
   "hours": 4,
   "days": 4,
   "show": {
-    "left": "wind",
+    "left": "dust",
     "humidity": true,
     "hourly": true,
     "daily": true
