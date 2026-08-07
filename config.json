@@ -1,8 +1,8 @@
 {
   "serviceKey": "rYYSew4DaEimeBMXNxildJfm9s9EhY4TKQhjWWprA1IYV68yS0pHnuv64wJh3RuLgEQER2fJzw6HKCAhPa2plg==",
-  "region": "서귀포",
-  "lat": 33.2541,
-  "lon": 126.5601,
+  "region": "포항",
+  "lat": 36.019,
+  "lon": 129.3435,
   "intervalMin": 10,
   "hours": 4,
   "days": 4,
