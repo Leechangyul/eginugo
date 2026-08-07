@@ -1,8 +1,8 @@
 {
   "serviceKey": "rYYSew4DaEimeBMXNxildJfm9s9EhY4TKQhjWWprA1IYV68yS0pHnuv64wJh3RuLgEQER2fJzw6HKCAhPa2plg==",
-  "region": "이천",
-  "lat": 37.2721,
-  "lon": 127.435,
+  "region": "거제",
+  "lat": 34.8806,
+  "lon": 128.6212,
   "intervalMin": 10,
   "hours": 4,
   "days": 4,
@@ -13,11 +13,11 @@
     "daily": true
   },
   "theme": {
-    "top": "#04203f",
-    "bottom": "#0a3a5e",
+    "top": "#000000",
+    "bottom": "#000000",
     "glow": false,
-    "ink": "#d8e8f5",
-    "dim": "#8ab0cc"
+    "ink": "#ffffff",
+    "dim": "#8ebadc"
   },
   "displayMode": "fit"
 }
