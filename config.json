@@ -1,8 +1,8 @@
 {
   "serviceKey": "rYYSew4DaEimeBMXNxildJfm9s9EhY4TKQhjWWprA1IYV68yS0pHnuv64wJh3RuLgEQER2fJzw6HKCAhPa2plg==",
-  "region": "구미",
-  "lat": 36.1196,
-  "lon": 128.3441,
+  "region": "울진",
+  "lat": 36.993,
+  "lon": 129.4004,
   "intervalMin": 10,
   "hours": 4,
   "days": 4,
@@ -13,11 +13,11 @@
     "daily": true
   },
   "theme": {
-    "top": "#136DE0",
-    "bottom": "#4BB7EA",
-    "glow": true,
-    "ink": "#FFFFFF",
-    "dim": "#EEF8FF"
+    "top": "#04203f",
+    "bottom": "#0a3a5e",
+    "glow": false,
+    "ink": "#d8e8f5",
+    "dim": "#8ab0cc"
   },
   "displayMode": "fit"
 }
