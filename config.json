@@ -1,8 +1,8 @@
 {
   "serviceKey": "rYYSew4DaEimeBMXNxildJfm9s9EhY4TKQhjWWprA1IYV68yS0pHnuv64wJh3RuLgEQER2fJzw6HKCAhPa2plg==",
-  "region": "밀양",
-  "lat": 35.4936,
-  "lon": 128.7486,
+  "region": "영덕",
+  "lat": 36.415,
+  "lon": 129.3653,
   "intervalMin": 10,
   "hours": 4,
   "days": 4,
@@ -13,11 +13,11 @@
     "daily": true
   },
   "theme": {
-    "top": "#000000",
-    "bottom": "#000000",
+    "top": "#04203f",
+    "bottom": "#0a3a5e",
     "glow": false,
-    "ink": "#ffffff",
-    "dim": "#8ebadc"
+    "ink": "#d8e8f5",
+    "dim": "#8ab0cc"
   },
   "displayMode": "fit"
 }
