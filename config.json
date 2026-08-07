@@ -13,11 +13,11 @@
     "daily": true
   },
   "theme": {
-    "top": "#136de0",
-    "bottom": "#4bb7ea",
-    "glow": true,
-    "ink": "#ffffff",
-    "dim": "#eef8ff"
+    "top": "#04203f",
+    "bottom": "#0a3a5e",
+    "glow": false,
+    "ink": "#d8e8f5",
+    "dim": "#8ab0cc"
   },
   "displayMode": "fit"
 }
