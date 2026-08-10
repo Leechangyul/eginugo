@@ -145,7 +145,8 @@ board.html 이 그 1/4 로 맞춥니다. 화면 파일을 따로 고칠 필요�
 | `python serve.py source0` | 센서 소스를 0(직결)으로 강제 설정 |
 | `python serve.py build` | 독립 실행판 생성 (설정·이미지 내장) |
 | `python serve.py upload` | FTP 로 플레이어에 업로드 |
-| `python serve.py hunt` | 경로 탐색 (FTP 구조 + HTTP 서빙 확인) |
+| `python serve.py hunt` | HTTP 경로 60건 자동 검사 |
+| `python serve.py paths` | 파일 위치 확인 + file:// 후보 목록 |
 
 `bench` `watch` `probe` `slow` `find` `config` `programs` 는 **검사 후 종료**합니다.
 웹서버가 뜨지 않으므로 화면은 동작하지 않습니다.
@@ -215,14 +216,39 @@ http://192.168.0.9:8000/board.html?v=10   ← 수정 후
 플레이어의 HTTP 서버가 업로드한 파일을 직접 서빙합니다.
 페이지와 센서 API 가 같은 출처가 되므로 프록시(serve.py)가 필요 없습니다.
 
+### 핵심 — 서빙 경로는 `/images/`
+
+플레이어의 Jetty 서버는 **`/images/` 하나만** 프로그램 폴더를 서빙합니다.
+60개 경로를 검사해 찾아낸 결과입니다. `/program/`, `/files/`, `/static/` 등은
+모두 404 입니다.
+
+```
+FTP 업로드 위치        /program            (FTP 상의 경로)
+실제 OS 경로           /mnt/sdcard/Android/data/com.color.home/files/Ftp/program
+HTTP 접근 경로         http://192.168.0.16/images/...
+```
+
+같은 출처이므로 CORS 가 없고, 상대경로 `/api/csensor.json` 이 바로 통합니다.
+
 ### 배포 절차
 
 ```
 1. panel.html 에서 설정과 이미지를 완성하고 저장
-2. python serve.py build      standalone.html 생성 (설정·이미지 내장)
+2. python serve.py build      standalone.html + upload/ 생성
 3. python serve.py upload     FTP 로 플레이어에 업로드
-4. PlayerMaster 웹페이지 창 주소:
-      http://192.168.0.16/program/standalone.html
+4. serve.py 종료 (Ctrl+C)     PC 는 이제 불필요
+5. PlayerMaster 웹페이지 창 주소:
+      http://192.168.0.16/images/standalone.html?v=1
+```
+
+파일을 바꿀 때마다 `?v=` 숫자를 올리세요. 캐시 제어 API 가 없어
+주소가 같으면 플레이어가 예전 파일을 계속 씁니다.
+
+### 경로를 다시 찾아야 할 때
+
+```
+python serve.py paths     파일 위치 확인 + file:// 후보 목록
+python serve.py hunt      HTTP 경로 60건 자동 검사
 ```
 
 ### ⚠ 반드시 지킬 것
