@@ -2,11 +2,16 @@
 <html lang="ko" style="background:#2B8DE6">
 <head>
 <meta charset="utf-8">
+<!-- 이 태그가 없으면 모바일 계열 브라우저(A200 내장 등)가 페이지를 실제 창 크기가
+     아닌 가상 폭(보통 980px)으로 레이아웃한 뒤 배율을 걸어 그립니다.
+     그러면 336px 이 336 실제 픽셀로 매핑되지 않아 화면이 잘립니다. -->
+<meta name="viewport" content="width=device-width, initial-scale=1,
+      maximum-scale=1, minimum-scale=1, user-scalable=no">
 <meta name="robots" content="noindex, nofollow, noarchive">
 <title>기상안내전광판</title>
 <!--
   ============================================================================
-  기상안내전광판 384 x 432  ·  단일 파일 버전
+  기상안내전광판 336 x 336  ·  단일 파일 버전
   ============================================================================
   서버가 필요 없습니다. 이 파일 하나를 A200 에 넣고 웹페이지 창으로 띄우면 끝입니다.
   기상청 API 를 브라우저에서 직접 호출합니다.
@@ -29,57 +34,57 @@ html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;
   cursor:none;-webkit-user-select:none;user-select:none}
 
 body{background:#2B8DE6}
-#stage{position:absolute;left:0;top:0;width:384px;height:432px;overflow:hidden;
+#stage{position:absolute;left:0;top:0;width:336px;height:336px;overflow:hidden;
   background:#2B8DE6;-webkit-transform-origin:0 0;transform-origin:0 0}
-#glow{position:absolute;left:0;top:0;width:384px;height:432px}
+#glow{position:absolute;left:0;top:0;width:336px;height:336px}
 .ab{position:absolute}
 
-#hd{left:16px;top:6px;width:352px;height:30px}
-#pin{position:absolute;left:0;top:7px;width:11px;height:16px}
-#region{position:absolute;left:18px;top:0;height:30px;line-height:30px;
-  font-size:25px;font-weight:bold;color:#fff;white-space:nowrap}
-#date{position:absolute;right:0;top:0;height:30px;line-height:30px;
-  font-size:22px;font-weight:bold;color:#EEF8FF;white-space:nowrap}
+#hd{left:12px;top:4px;width:312px;height:26px}
+#pin{position:absolute;left:0;top:6px;width:10px;height:14px}
+#region{position:absolute;left:16px;top:0;height:26px;line-height:26px;
+  font-size:22px;font-weight:bold;color:#fff;white-space:nowrap}
+#date{position:absolute;right:0;top:0;height:26px;line-height:26px;
+  font-size:19px;font-weight:bold;color:#EEF8FF;white-space:nowrap}
 
-#wxicon{left:146px;top:42px;width:92px;height:92px;display:block}
+#wxicon{left:134px;top:34px;width:68px;height:68px;display:block}
 
-#main{left:16px;top:136px;width:352px;height:74px}
-#temp{position:absolute;left:0;top:0;height:74px;line-height:74px;
-  font-size:66px;font-weight:bold;color:#fff;white-space:nowrap}
-#temp .u{font-size:33px;vertical-align:top;line-height:44px}
-.col{position:absolute;top:0;width:80px;height:74px;text-align:center}
-#cLeft{right:88px}
+#main{left:12px;top:104px;width:312px;height:60px}
+#temp{position:absolute;left:0;top:0;height:60px;line-height:60px;
+  font-size:56px;font-weight:bold;color:#fff;white-space:nowrap}
+#temp .u{font-size:28px;vertical-align:top;line-height:36px}
+.col{position:absolute;top:0;width:68px;height:60px;text-align:center}
+#cLeft{right:76px}
 #cHum{right:0}
-.cv{font-size:29px;font-weight:bold;color:#fff;line-height:44px;white-space:nowrap}
-.cv i{font-size:16px;font-style:normal;color:#EEF8FF}
-.cl{font-size:19px;color:#EEF8FF;line-height:22px}
+.cv{font-size:25px;font-weight:bold;color:#fff;line-height:36px;white-space:nowrap}
+.cv i{font-size:14px;font-style:normal;color:#EEF8FF}
+.cl{font-size:16px;color:#EEF8FF;line-height:20px}
 
-.dv{left:16px;width:352px;height:1px;background:rgba(255,255,255,.42)}
-#div1{top:214px}
-#div2{top:312px}
+.dv{left:12px;width:312px;height:1px;background:rgba(255,255,255,.42)}
+#div1{top:168px}
+#div2{top:244px}
 
-#hrv{left:16px;top:220px;width:352px;height:22px}
-#hrg{left:16px;top:248px;width:352px;height:30px}
-#hrl{left:16px;top:282px;width:352px;height:22px}
-.hv{position:absolute;top:0;height:22px;line-height:22px;text-align:center;
-  font-size:20px;font-weight:bold;color:#fff}
-.hl{position:absolute;top:0;height:22px;line-height:22px;text-align:center;
-  font-size:19px;color:#EEF8FF}
+#hrv{left:12px;top:172px;width:312px;height:18px}
+#hrg{left:12px;top:192px;width:312px;height:26px}
+#hrl{left:12px;top:220px;width:312px;height:18px}
+.hv{position:absolute;top:0;height:18px;line-height:18px;text-align:center;
+  font-size:17px;font-weight:bold;color:#fff}
+.hl{position:absolute;top:0;height:18px;line-height:18px;text-align:center;
+  font-size:16px;color:#EEF8FF}
 
-#wkttl{left:16px;top:316px;height:19px;line-height:19px;font-size:18px;color:#EEF8FF}
-#wk{left:16px;top:339px;width:352px;height:85px}
-.wd{position:absolute;top:0;width:70px;text-align:center}
-.wdow{height:24px;line-height:24px;font-size:21px;font-weight:bold;color:#fff}
-.wico{display:block;margin:2px auto 0;width:34px;height:34px}
-.wval{height:21px;line-height:21px;font-size:18px;color:#F4FBFF;white-space:nowrap}
+#wkttl{left:12px;top:248px;height:16px;line-height:16px;font-size:15px;color:#EEF8FF}
+#wk{left:12px;top:268px;width:312px;height:62px}
+.wd{position:absolute;top:0;width:62px;text-align:center}
+.wdow{height:18px;line-height:18px;font-size:18px;font-weight:bold;color:#fff}
+.wico{display:block;margin:2px auto 0;width:24px;height:24px}
+.wval{height:16px;line-height:16px;font-size:15px;color:#F4FBFF;white-space:nowrap}
 
-#stamp{position:absolute;right:4px;bottom:2px;font-size:12px;
+#stamp{position:absolute;right:3px;bottom:1px;font-size:11px;
   color:rgba(255,255,255,.55)}
 /* position 을 이 규칙에 직접 둡니다. 자바스크립트가 className 을 갈아치워도
    .ab 에만 의존하면 position 이 날아가 레이아웃이 무너집니다. */
-#diag{position:absolute;left:0;bottom:0;width:384px;box-sizing:border-box;
+#diag{position:absolute;left:0;bottom:0;width:336px;box-sizing:border-box;
   padding:5px 8px;
-  background:#7a1414;color:#fff;font-size:13px;line-height:1.35;font-weight:bold;
+  background:#7a1414;color:#fff;font-size:12px;line-height:1.3;font-weight:bold;
   display:none}
 #diag.on{display:block}
 #diag b{color:#FFD23F}
@@ -123,8 +128,8 @@ body.setup #setup{display:block}
 #setup ol{margin:6px 0 0;padding-left:20px;font-size:13.5px;color:#6b6b66}
 #setup ol li{margin-bottom:4px}
 #setup code{background:#ececea;padding:1px 5px;border-radius:4px;color:#22221f}
-#pvhold{width:392px;margin:0 auto}
-#pvbox{width:384px;height:432px;border:1px solid #dcdcd8;border-radius:6px;
+#pvhold{width:344px;margin:0 auto}
+#pvbox{width:336px;height:336px;border:1px solid #dcdcd8;border-radius:6px;
   overflow:hidden;background:#000;position:relative}
 #msg{font-size:14px;min-height:22px}
 #msg.err{color:#a32d2d;font-weight:600}
@@ -160,8 +165,8 @@ body.setup #setup{display:block}
 
   <div class="ab dv" id="div1"></div>
   <div class="ab" id="hrv"></div>
-  <svg class="ab" id="hrg" viewBox="0 0 352 30" preserveAspectRatio="none">
-    <polyline id="curve" fill="none" stroke="#fff" stroke-width="2.4"
+  <svg class="ab" id="hrg" viewBox="0 0 312 26" preserveAspectRatio="none">
+    <polyline id="curve" fill="none" stroke="#fff" stroke-width="2.1"
               stroke-linecap="round" stroke-linejoin="round" points=""/>
     <g id="dots"></g>
   </svg>
@@ -174,6 +179,19 @@ body.setup #setup{display:block}
   <div class="ab" id="stamp">--:--</div>
   <div class="ab" id="diag"></div>
 </div>
+
+<script>
+/* 재로드 직후 '마지막으로 그려진 화면'을 그대로 되살립니다.
+   본 스크립트는 문서 끝에서 실행되므로 그때까지 빈 배경이 보입니다.
+   이 조각은 스테이지가 파싱되자마자 실행돼 그 간격을 없앱니다. */
+(function(){
+  try {
+    if (/setup/i.test(location.search + location.hash)) return;
+    var h = localStorage.getItem("ledboard.snap");
+    if (h) document.getElementById("stage").innerHTML = h;
+  } catch (e) {}
+})();
+</script>
 
 <div id="setup"><div class="in">
   <h1>전광판 설정 <span class="tag" id="verTag" style="font-size:12px"></span></h1>
@@ -353,6 +371,30 @@ body.setup #setup{display:block}
 </div></div>
 
 <script>
+/* ?diag 를 붙이면 브라우저가 보고하는 실제 크기를 화면에 크게 표시합니다.
+   화면이 잘리거나 남을 때 원인을 추측하지 않고 바로 확인하기 위한 것입니다. */
+if (/[?&]diag/.test(location.search)){
+  var D = document.createElement("div");
+  D.style.cssText = "position:absolute;left:0;top:0;right:0;bottom:0;z-index:99;"
+    + "background:#0a0a12;color:#fff;font:13px/1.5 monospace;padding:6px 8px;"
+    + "white-space:pre;overflow:hidden";
+  function row(k, v){ return k + ": " + v + "\n"; }
+  var de = document.documentElement;
+  D.textContent =
+      row("stage",        "336 x 336")
+    + row("client",       de.clientWidth + " x " + de.clientHeight)
+    + row("inner",        window.innerWidth + " x " + window.innerHeight)
+    + row("screen",       (screen.width||0) + " x " + (screen.height||0))
+    + row("pixelRatio",   window.devicePixelRatio || 1)
+    + row("outer",        (window.outerWidth||0) + " x " + (window.outerHeight||0))
+    + "\n"
+    + "client 가 336 x 336 이면 정상\n"
+    + "980 등 다른 값이면 viewport 문제";
+  document.addEventListener("DOMContentLoaded", function(){
+    document.body.appendChild(D);
+  });
+}
+
 /* ============================================================================
    CONFIG  —  이 블록만 고치세요
    ============================================================================ */
@@ -475,7 +517,7 @@ var STN = [
 var KINDS = ["sun","suncloud","cloud","rain","sleet","snow"];
 var DOW = ["일","월","화","수","목","금","토"];
 var BASE = "https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/";
-var STAGE_W = 384, STAGE_H = 432, GW = 352, GH = 30;
+var STAGE_W = 336, STAGE_H = 336, GW = 312, GH = 26;
 var VIL = [2,5,8,11,14,17,20,23];
 
 /* 재로드 직후 첫 페인트를 배경색으로 채워 흰 섬광을 없앱니다. */
@@ -497,7 +539,7 @@ var LOADS = (function(){
   } catch (e) { return 0; }
 })();
 
-var VERSION = "08-07 10:51:21";
+var VERSION = "336 viewport-fix";
 
 var $ = function(id){ return document.getElementById(id); };
 
@@ -692,7 +734,14 @@ var GRADE = {"1":"좋음","2":"보통","3":"나쁨","4":"매우나쁨"};
 /* 시도 단위로 한 번에 받아 원하는 측정소를 골라냅니다.
    좌표->측정소 변환 API 를 따로 쓰지 않아도 되고, 설정 화면에서
    실제 측정소 목록을 그대로 보여줄 수 있습니다. */
-var airEverOk = false;      /* 한 번이라도 성공했는지 */
+/* 에어코리아 오류를 두 종류로 나눕니다.
+     일시적  : 서버 5xx, 시간 초과, 연결 실패  -> 알릴 필요 없음(다음 주기에 회복)
+     설정 문제: 인증키 미등록, 잘못된 시도명    -> 반드시 알려야 함
+   값을 보여주고 있는데 "실패"를 띄우면 오히려 혼란스럽습니다. */
+function airTransient(msg){
+  return /HTTP\s*(0|4\d\d|5\d\d)|시간 초과|연결 실패|빈 응답|항목이 없습니다/
+         .test(String(msg || ""));
+}
 
 function fetchAir(cb, tries){
   var a = CONFIG.air || {};
@@ -702,10 +751,10 @@ function fetchAir(cb, tries){
           + "&returnType=json&numOfRows=200&pageNo=1&ver=1.3"
           + "&sidoName=" + encodeURIComponent(a.sido) + "&_=" + Date.now();
   get(url, function(err, items){
-    if (!err && items && items.length){ airEverOk = true; cb(null, items); return; }
+    if (!err && items && items.length){ cb(null, items); return; }
     /* 에어코리아는 응답이 느리거나 간헐적으로 비는 일이 잦아 몇 번 더 시도합니다. */
     if (left > 1){
-      setTimeout(function(){ fetchAir(cb, left - 1); }, 3000);
+      setTimeout(function(){ fetchAir(cb, left - 1); }, 6000);
       return;
     }
     cb(err || "빈 응답");
@@ -873,8 +922,8 @@ function setHTML(el, html, key){
   return true;
 }
 
-var LAY = {div1:214, hrv:220, hrg:248, hrl:282, div2:312, wkttl:316, wk:339};
-var HOURLY_H = 98;
+var LAY = {div1:168, hrv:172, hrg:192, hrl:220, div2:244, wkttl:248, wk:268};
+var HOURLY_H = 76;
 
 function applyTheme(root){
   var th = CONFIG.theme, sh = CONFIG.show;
@@ -907,7 +956,7 @@ function applyTheme(root){
   var left = sh.left || (sh.wind ? "wind" : "none");   /* 옛 설정 호환 */
   q("#cLeft").style.display = (left === "none") ? "none" : "block";
   q("#cHum").style.display  = sh.humidity ? "block" : "none";
-  q("#cLeft").style.right = sh.humidity ? "88px" : "0px";
+  q("#cLeft").style.right = sh.humidity ? "76px" : "0px";
   q("#llab").textContent = (left === "wind") ? "바람"
     : (((CONFIG.air || {}).pm === "pm25") ? "초미세먼지" : "미세먼지");
   q("#lunit").textContent = (left === "wind") ? "m/s" : "㎍";
@@ -915,7 +964,7 @@ function applyTheme(root){
   (function(){
     var el = q("#llab"), f = 19;
     el.style.fontSize = f + "px";
-    while (f > 13 && el.scrollWidth > 80){ f -= 1; el.style.fontSize = f + "px"; }
+    while (f > 12 && el.scrollWidth > 68){ f -= 1; el.style.fontSize = f + "px"; }
   })();
 
   var hr = ["#div1","#hrv","#hrg","#hrl"];
@@ -934,10 +983,10 @@ function fitTemp(root){
   var u = el.getElementsByTagName("span")[0];
   var lf = CONFIG.show.left || (CONFIG.show.wind ? "wind" : "none");
   var n = (lf !== "none" ? 1 : 0) + (CONFIG.show.humidity ? 1 : 0);
-  var limit = 352 - n*88 - 12, f = 66;
+  var limit = 312 - n*76 - 10, f = 56;
   el.style.fontSize = f + "px";
   if (u) u.style.fontSize = Math.round(f*0.50) + "px";
-  while (f > 40 && el.offsetWidth > limit){
+  while (f > 34 && el.offsetWidth > limit){
     f -= 2;
     el.style.fontSize = f + "px";
     if (u) u.style.fontSize = Math.round(f*0.50) + "px";
@@ -980,7 +1029,7 @@ function drawHourly(root, list){
   var g = "";
   for (i=0;i<n;i++){
     g += '<circle cx="'+pts[i][0].toFixed(1)+'" cy="'+pts[i][1].toFixed(1)
-       + '" r="4.2" fill="'+CONFIG.theme.ink+'"/>';
+       + '" r="3.6" fill="'+CONFIG.theme.ink+'"/>';
     var a = document.createElement("div");
     a.className = "hv"; a.style.left = (slot*i)+"px"; a.style.width = slot+"px";
     a.style.color = CONFIG.theme.ink;
@@ -1002,7 +1051,7 @@ function drawDaily(root, list){
   RSIG.daily = sig;
   var box = root.querySelector("#wk");
   box.innerHTML = "";
-  var n = list.length, slot = 352/n;
+  var n = list.length, slot = 312/n;
   for (var i=0;i<n;i++){
     var d = list[i];
     var w = document.createElement("div");
@@ -1013,7 +1062,7 @@ function drawDaily(root, list){
       + '<img class="wico" src="'+ICON[ik+"-sm"]+'" alt="">'
       + '<div class="wval" style="color:'+CONFIG.theme.dim+'">'+d.tmn+"&deg; "+d.tmx+"&deg;</div>";
     box.appendChild(w);
-    var v = w.getElementsByTagName("div")[1], f = 18;
+    var v = w.getElementsByTagName("div")[1], f = 15;
     while (f > 13 && v.scrollWidth > slot-4){ f -= 1; v.style.fontSize = f+"px"; }
   }
 }
@@ -1090,11 +1139,15 @@ function rescale(){
     st.style.left = "0px"; st.style.top = "0px";
     return;
   }
-  var s = Math.min(window.innerWidth/STAGE_W, window.innerHeight/STAGE_H);
+  /* innerWidth 는 일부 내장 브라우저에서 창 크기와 다르게 보고됩니다.
+     documentElement.clientWidth 가 더 실제에 가깝습니다. */
+  var vw = document.documentElement.clientWidth  || window.innerWidth  || STAGE_W;
+  var vh = document.documentElement.clientHeight || window.innerHeight || STAGE_H;
+  var s = Math.min(vw/STAGE_W, vh/STAGE_H);
   st.style.webkitTransform = "scale("+s+")";
   st.style.transform = "scale("+s+")";
-  st.style.left = Math.floor((window.innerWidth - STAGE_W*s)/2) + "px";
-  st.style.top  = Math.floor((window.innerHeight - STAGE_H*s)/2) + "px";
+  st.style.left = Math.floor((vw - STAGE_W*s)/2) + "px";
+  st.style.top  = Math.floor((vh - STAGE_H*s)/2) + "px";
 }
 window.onresize = rescale;
 
@@ -1112,11 +1165,19 @@ function mergeData(prev, next){
   return out;
 }
 
+function saveSnap(){
+  /* 설정 화면에서는 스테이지가 미리보기 안으로 옮겨져 있으므로 저장하지 않습니다.
+     오류 띠가 떠 있는 상태도 저장하지 않습니다. 다음 로드에 그대로 되살아납니다. */
+  if (isSetup || RSIG.diag !== "") return;
+  try { localStorage.setItem("ledboard.snap", $("stage").innerHTML); } catch (e) {}
+}
+
 function apply(data){
   if (!data || data.temp == null) return;
   lastData = mergeData(lastData, data);
   lastOkAt = new Date().getTime();
   render(document, lastData);
+  saveSnap();
 }
 
 function cycle(){
@@ -1124,12 +1185,13 @@ function cycle(){
     apply(data);
     if (err){
       diag("수집 실패", err);
-    } else if (data && data.airErr && !airEverOk){
-      /* 설정이 잘못된 경우에만 알립니다.
-         한 번이라도 성공했다면 일시적 장애이므로, 빨간 띠가 떴다 사라지며
-         깜박이는 것을 막기 위해 조용히 직전 값을 유지합니다. */
+    } else if (data && data.airErr
+               && !(lastData && lastData.air && airTransient(data.airErr))){
+      /* 보여줄 값이 있고 일시적 장애라면 조용히 직전 값을 유지합니다.
+         값이 아예 없거나 설정 문제일 때만 알립니다. */
       diag("미세먼지 실패", data.airErr
-         + "  (에어코리아 활용신청 / 측정소 확인)");
+         + (airTransient(data.airErr) ? "  (에어코리아 서버 일시 장애)"
+                                      : "  (활용신청 / 측정소 확인)"));
       saveCache(lastData);
     } else {
       diagClear();
@@ -1582,11 +1644,15 @@ loadOverride(function(){
   /* 재로드 직후 빈 화면이 보이지 않도록 마지막 정상값을 먼저 그립니다.
      새 데이터가 도착하면 곧바로 덮어씁니다. */
   var cached = loadCache();
+  var hasSnap = false;
+  try { hasSnap = !!localStorage.getItem("ledboard.snap"); } catch (e) {}
+
   if (cached){
     lastData = cached.d;
     lastOkAt = cached.t;
     render(document, lastData);
-  } else {
+  } else if (!hasSnap){
+    /* 복원된 화면이 있으면 초기 '--' 로 덮어쓰지 않습니다 */
     render(document, {region: CONFIG.region, date: "", temp: 0,
                       humidity: null, wind: null, icon: "sun", hourly: [], daily: []});
     $("temp").innerHTML = '--<span class="u">&deg;C</span>';
